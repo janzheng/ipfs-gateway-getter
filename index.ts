@@ -6,7 +6,7 @@ const server = fastify()
 
 
 server.get('/', function (request, reply) {
-  reply.code(200).send({ message: "Hello world!" });
+  reply.code(200).send({ message: "Hello world!!!!" });
 })
 
 async function getfile(cid, gateway) {
@@ -22,8 +22,8 @@ async function getfile(cid, gateway) {
 }
 
 server.get("/:cid", async (req, res) => {
-  const cid = req.params?.cid;
-  const name = req.query?.name;
+  const cid = req.params['cid'];
+  const name = req.query['name'];
 
   // weird edge case
   if (cid == 'favicon.ico') return
