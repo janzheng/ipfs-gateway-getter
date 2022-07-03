@@ -21,14 +21,15 @@ async function getfile(cid, gateway) {
   }
 }
 
+// https://ipfs.up.railway.app/QmZgwcHnbdWH1w6gsGCPq7Eofnz2HFTsQjHeqfZM4SFesk?download=rick.jpg
 server.get("/:cid", async (req, res) => {
   const cid = req.params['cid'];
-  const name = req.query['name'];
+  const download = req.query['download'];
 
   // weird edge case
   if (cid == 'favicon.ico') return
 
-  console.log('>> requesting -->', cid, name)
+  console.log('>> requesting -->', cid, download)
 
   let file
   let result = await Promise.any([
@@ -42,15 +43,21 @@ server.get("/:cid", async (req, res) => {
   ])
 
   if (result) {
-    console.log('result:', result);
     file = result
 
-    //   return res.send(type);
-    res.headers({
-      'Content-Type': file.type, // uncommenting headers makes Chrome show it
-      // 'Content-disposition': `attachment; filename="${name}"`, // downloads
-      'Content-Disposition': `inline; filename="${name}"`, // shows in browser
-    })
+    if(download) {
+      res.headers({
+        'Content-Type': file.type, // uncommenting headers makes Chrome show it
+        'Content-disposition': `attachment; filename="${download}"`, // downloads
+        // 'Content-Disposition': `inline; filename="${name}"`, // shows in browser
+      })
+    } else {
+      res.headers({
+        'Content-Type': file.type, // uncommenting headers makes Chrome show it
+        // 'Content-disposition': `attachment; filename="${name}"`, // downloads
+        'Content-Disposition': `inline"`, // shows in browser
+      })
+    }
 
     return res.send(Buffer.from(file.arrBuf));
   }
